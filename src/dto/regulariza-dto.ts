@@ -4,7 +4,7 @@ export class RegularizaDto {
 }
 
 export class device {
-    device: string;
+    deviceID: string;
     serviceNumber: string;
 }
 

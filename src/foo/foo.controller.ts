@@ -9,6 +9,7 @@ import { Controller,
          Res,
          Param,
          Query,
+         Req,
          Logger } from '@nestjs/common';
 import { Observable,
          throwError } from 'rxjs';
@@ -21,7 +22,11 @@ import { Recupera } from '../dto/recupera.dto';
 import { RegularizaDto } from '../dto/regulariza-dto';
 import { OlvidaPass } from '../dto/olvida.dto';
 import { ActivaUser } from '../dto/activa.dto';
-import { map } from 'rxjs/operators';
+import { ActivaWtth } from '../dto/activawtth-dto';
+import { Send } from '../dto/send.dto';
+import { Verify } from '../dto/verify.dto';
+import { ResetPassword } from '../dto/reset.dto';
+import { map, catchError } from 'rxjs/operators';
 import axios from 'axios'
 import qs from 'qs'
 
@@ -39,31 +44,169 @@ export class FooController {
     constructor(
         private readonly httpService: HttpService,
     ) {}
+
     // create a custom timestamp format for log statements
 
     @Post('recuperaPass')
-    recuperaPass(@Body() recupera: Recupera):any
+    async recuperaPass(@Body() recupera: Recupera)
     {
-      log.info('Método Recupera Contrasenia Entrada - ', recupera, ' ejecutado el ', new Date().toJSON());
-      return this.httpService.post("http://192.168.37.146:8082/servlet/microGateway/invoke",
-      recupera,
-      {
+
+      var axios = require('axios');
+      /*var data = JSON.stringify({"claroID":"rsoledil@claro.com.ec"});*/
+      let respuesta=null;
+      var config = {
+        method: 'post',
+        url: 'http://192.168.37.151:8282/claroId/v2/passwords/recovery',
         headers: {
-          'Content-Type': 'application/json',
-          'idRequest': 'RecoveryPassClaroId',
+          'companyId': 'AMCO',
+          'Content-Type': 'application/json'
         },
-      }).pipe(map((res) => {
-        if(res.statusText=="OK"){
-          log.info('Método Recupera Contrasenia Salida - ', res.data, ' ejecutado el ', new Date().toJSON());
-          return res.data;
-        }else{
-          log.info('Método Recupera Contrasenia Salida - ', res.config, ' ejecutado el ', new Date().toJSON());
+        data : recupera
+      };
+
+      await axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+        log.info('Método recovery Claro Id - ', response.data, ' ejecutado el ', new Date().toJSON());
+        respuesta=response.data;
+      })
+      .catch(function (error)
+      {
+          if (error.response) {
+            respuesta=error.response;
+           console.log(error.response.data);
+          //log.info('Método recovery Claro Id - ', error.response.data, ' ejecutado el ', new Date().toJSON());
+           respuesta = error.response.data;
+          } else if (error.request) {
+              console.log(error.request);
+              //log.info('Método recovery Claro Id - ', error.request, ' ejecutado el ', new Date().toJSON());
+              respuesta = error.request;
+          } else {
+              console.log('Error', error.message);
+              //log.info('Método recovery Claro Id - ', error.message, ' ejecutado el ', new Date().toJSON());
+              respuesta = error.message;
+          }
+          log.info('Método Create recuperaPass - ', error.config, ' ejecutado el ', new Date().toJSON());
+      });
+      return respuesta;
+    }
+
+    @Post('verify')
+    async verify(@Body() verify: Verify)
+    {
+      var axios = require('axios');
+      let respuesta=null;
+      var config = {
+        method: 'post',
+        url: 'http://192.168.37.151:8282/claroId/v2/tokens/verify',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data : verify
+      };
+
+      await axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+        respuesta=response.data;
+      })
+      .catch(function (error) {
+        if (error.response) {
+          respuesta=error.response;
+         console.log(error.response.data);
+        //log.info('Método Verify Claro Id - ', error.response.data, ' ejecutado el ', new Date().toJSON());
+         respuesta = error.response.data;
+        } else if (error.request) {
+            console.log(error.request);
+            //log.info('Método Verify Claro Id - ', error.request, ' ejecutado el ', new Date().toJSON());
+            respuesta = error.request;
+        } else {
+            console.log('Error', error.message);
+            //log.info('Método Verify Claro Id - ', error.message, ' ejecutado el ', new Date().toJSON());
+            respuesta = error.message;
         }
+        log.info('Método Verify - ', error.config, ' ejecutado el ', new Date().toJSON());
+      });
+      return respuesta;
+    }
 
+    @Post('resetPassword')
+    async resetPassword(@Body() resetPassword: ResetPassword)
+    {
+      var axios = require('axios');
+      //var data = JSON.stringify({"claroID":"lgame@grupo-link.com","resetToken":"3815","password":"789456","identificationCard":{"identify":"0941168569","expeditionDate":"10/01/1990"}});
+      let respuesta = null;
+      var config = {
+        method: 'post',
+        url: 'http://192.168.37.151:8282/claroId/v2/passwords/reset',
+        headers: {
+          'companyId': 'AMCO',
+          'Content-Type': 'application/json'
+        },
+        data : resetPassword
+      };
+
+      axios(config)
+      .then(function (response) {
+         respuesta=response.data;
+         console.log(response.data);
+      })
+      .catch(function (error) {
+        if (error.response) {
+          respuesta=error.response;
+         console.log(error.response.data);
+        log.info('Método resetPassword Claro Id - ', error.response.data, ' ejecutado el ', new Date().toJSON());
+         respuesta = error.response.data;
+        } else if (error.request) {
+            console.log(error.request);
+            log.info('Método resetPassword Claro Id - ', error.request, ' ejecutado el ', new Date().toJSON());
+            respuesta = error.request;
+        } else {
+            console.log('Error', error.message);
+            log.info('Método resetPassword Claro Id - ', error.message, ' ejecutado el ', new Date().toJSON());
+            respuesta = error.message;
         }
-
-      ));
-
+        log.info('Método resetPassword - ', error.config, ' ejecutado el ', new Date().toJSON());
+      });
+      return respuesta;
+    }
+    @Post('send')
+    async send(@Body() send: Send)
+    {
+        var axios = require('axios');
+        let respuesta = null;
+        var config = {
+          method: 'post',
+          url: 'http://192.168.37.151:8282/claroId/v2/tokens/send',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          data : send
+        };
+        await axios(config)
+        .then(function (response) {
+          //console.log(JSON.stringify(response.data));
+          log.info('Método Send Claro Id - ', response.data, ' ejecutado el ', new Date().toJSON());
+          respuesta=response.data;
+        })
+        .catch(function (error) {
+          if (error.response) {
+            respuesta=error.response;
+           console.log(error.response.data);
+          log.info('Método Send Claro Id - ', error.response.data, ' ejecutado el ', new Date().toJSON());
+           respuesta = error.response.data;
+            } else if (error.request) {
+                console.log(error.request);
+                log.info('Método Send Claro Id - ', error.request, ' ejecutado el ', new Date().toJSON());
+                respuesta = error.request;
+            } else {
+                console.log('Error', error.message);
+                log.info('Método Send Claro Id - ', error.message, ' ejecutado el ', new Date().toJSON());
+                respuesta = error.message;
+            }
+            log.info('Método Send - ', error.config, ' ejecutado el ', new Date().toJSON());
+        });
+        return respuesta;
     }
 
     @Post('updatePass')
@@ -84,20 +227,43 @@ export class FooController {
     }
 
     @Post('activaUser')
-    activaUser(@Body() activaUser: ActivaUser)
+    async activaUser(@Body() activaUser: ActivaUser)
     {
-      log.info('Método updatePass Entrada - ', activaUser, ' ejecutado el ', new Date().toJSON());
-      return this.httpService.post("http://192.168.37.146:8082/servlet/microGateway/invoke",
-      activaUser,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'idRequest': 'VerifyUserClaroId',
-        },
-      }).pipe(map((res) => {
-        log.info('Método updatePass Salida - ', res.data, ' ejecutado el ', new Date().toJSON());
-          return res.data;
-        }));
+        var axios = require('axios');
+        let respuesta = null;
+        var data = activaUser;
+        var config = {
+            method: 'post',
+            url: 'http://192.168.37.151:8282/claroId/v2/users/activate',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            data : data
+          };
+        log.info('Método Activa Claro Id - ', data, ' ejecutado el ', new Date().toJSON());
+        await axios(config)
+          .then(function (response) {
+            //console.log(JSON.stringify(response.data));
+            log.info('Método Activa Claro Id - ', JSON.stringify(response.data), ' ejecutado el ', new Date().toJSON());
+            respuesta = response.data;
+          })
+          .catch(function (error) {
+            if (error.response) {
+             console.log(error.response.data);
+             //log.info('Método Activa Claro Id - ', error.response.data, ' ejecutado el ', new Date().toJSON());
+             respuesta = error.response.data;
+            } else if (error.request) {
+                console.log(error.request);
+                //log.info('Método Activa Claro Id - ', error.request, ' ejecutado el ', new Date().toJSON());
+                respuesta = error.request;
+            } else {
+                console.log('Error', error.message);
+                //log.info('Método Activa Claro Id - ', error.message, ' ejecutado el ', new Date().toJSON());
+                respuesta = error.message;
+            }
+            log.info('Método Create Claro Id - ', error.config, ' ejecutado el ', new Date().toJSON());
+          });
+          return respuesta;
     }
 
     @Patch('/:claroId')
@@ -131,17 +297,41 @@ export class FooController {
     @Post('create')
     async createMessage(@Body() message: MessageDto)
     {
-       log.info('Método create Entrada - ', message, ' ejecutado el ', new Date().toJSON());
-        return this.httpService.post("http://192.168.37.151:8282/claroId/v2/user",
-        message,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }).pipe(map((res) => {
-          log.info('Método create Salida - ', res.data, ' ejecutado el ', new Date().toJSON());
-        return res.data;
-      }));
+      var axios = require('axios');
+      let respuesta = null;
+      var data = message;
+      var config = {
+        method: 'post',
+        url: 'http://192.168.37.151:8282/claroId/v2/users',
+        headers: {
+          'companyId': 'AMCO',
+          'Content-Type': 'application/json'
+        },
+        data : data
+      };
+      log.info('Método Create Claro Id Request - ', config, ' ejecutado el ', new Date().toJSON());
+      await axios(config)
+      .then(function (response) {
+        log.info('Método Create Claro Id - ', JSON.stringify(response.data), ' ejecutado el ', new Date().toJSON());
+        respuesta = response.data;
+      })
+      .catch(function (error) {
+        if (error.response) {
+         //console.log(error.response.data);
+         log.info('Método Create Claro Id - ', error.response.data, ' ejecutado el ', new Date().toJSON());
+         respuesta = error.response.data;
+        } else if (error.request) {
+            //console.log(error.request);
+            log.info('Método Create Claro Id - ', error.request, ' ejecutado el ', new Date().toJSON());
+            respuesta = error.request;
+        } else {
+            //console.log('Error', error.message);
+            log.info('Método Create Claro Id - ', error.message, ' ejecutado el ', new Date().toJSON());
+            respuesta = error.message;
+        }
+        log.info('Método Create Claro Id - ', error.config, ' ejecutado el ', new Date().toJSON());
+      });
+      return respuesta;
     }
 
    @Get('/buscarId/:claroId')
@@ -166,6 +356,7 @@ export class FooController {
      @Post('loginId')
      loginId(@Body() login: LoginDto)
      {
+
        const params="grant_type="+login.grant_type+
                     "&username="+login.username+
                     "&password="+login.password+
@@ -204,21 +395,56 @@ export class FooController {
      }
 
      @Post('regularizacionChip')
-     regularizaChip(@Body() regulariza: RegularizaDto){
+     async regularizaChip(@Body() regulariza: RegularizaDto)
+     {
+       /*console.log(regulariza);
        log.info('Método regularizacionChip Entrada - ', regulariza, ' ejecutado el ', new Date().toJSON());
        return this.httpService.post("http://192.168.37.146:8082/servlet/microGateway/invoke",
        regulariza,
        {
          headers: {
-           'Content-type': 'application/x-www-form-urlencoded',
-           'idRequest':'RegularizacionChipHW',
+           'Content-type': 'application/json',
+           'idRequest':'Regularizacion_Chip_HW_Aut',
          },
        }).pipe(map((res) => {
          log.info('Método regularizacionChip Salida - ', res.data, ' ejecutado el ', new Date().toJSON());
          return res.data;
-       }));
-     }
+       }));*/
+        var axios = require('axios');
+        //var data = JSON.stringify({"device":{"deviceID":"895930100086390309","serviceNumber":"0959730001"},"customer":{"identification":"1250021621","expeditionDate":"16/07/2020"}});
+        let respuesta=null;
+        var config = {
+          method: 'post',
+          url: 'http://192.168.37.146:8082/servlet/microGateway/invoke',
+          headers: {
+            'companyId': 'AMCO',
+            'idRequest': 'Regularizacion_Chip_HW_Aut',
+            'Content-Type': 'application/json'
+          },
+          data : regulariza
+        };
 
+        await axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+          respuesta =response.data;
+        })
+        .catch(function (error) {
+          if (error.response) {
+          console.log(error.response.data);
+          respuesta = error.response.data;
+         } else if (error.request) {
+             console.log(error.request);
+             respuesta = error.request;
+         } else {
+             console.log('Error', error.message);
+             respuesta = error.message;
+         }
+         log.info('Método Regulariza Claro Id - ', error.config, ' ejecutado el ', new Date().toJSON());
+        });
+
+        return respuesta;
+     }
 
      async pin(pin, claroID)
      {
@@ -230,6 +456,56 @@ export class FooController {
          log.info('Método pin Salida - ', res.data, ' ejecutado el ', new Date().toJSON());
          return res.data;
        }));
+     }
+
+     @Post('activaWtth')
+     async activaWtth(@Body() aWth: ActivaWtth)
+     {
+       /*log.info('Método ActivaWTTH Entrada - ', aWth, ' ejecutado el ', new Date().toJSON());
+       return this.httpService.post("http://192.168.37.146:8082/servlet/microGateway/invoke",
+       aWth,
+       {
+         headers: {
+           'Content-type': 'application/json',
+           'idRequest': 'ActivationWtth'
+         },
+       }).pipe(map((res) => {
+         log.info('Método ActivaWTTH Salida - ', res.data, ' ejecutado el ', new Date().toJSON());
+         return res.data;
+       }));*/
+       var axios = require('axios');
+       let respuesta =null;
+        var config = {
+          method: 'post',
+          url: 'http://192.168.37.146:8082/servlet/microGateway/invoke',
+          headers: {
+            'companyId': 'AMCO',
+            'IdRequest': 'WTTH:activacion',
+            'Content-Type': 'application/json'
+          },
+          data: aWth
+        };
+        log.info('Método ActivaWTTH Entrada - ', config, ' ejecutado el ', new Date().toJSON());
+        await axios(config)
+        .then(function (response) {
+          //console.log(JSON.stringify(response.data));
+          log.info('Método ActivaWTTH Salida - ', response.data, ' ejecutado el ', new Date().toJSON());
+          respuesta = response.data;
+        })
+        .catch(function (error) {
+          if (error.response) {
+          log.info('Método ActivaWTTH Salida - ', error.response.data, ' ejecutado el ', new Date().toJSON());
+          respuesta = error.response.data;
+         } else if (error.request) {
+             log.info('Método ActivaWTTH Salida - ', error.request, ' ejecutado el ', new Date().toJSON());
+             respuesta = error.request;
+         } else {
+             log.info('Método ActivaWTTH Salida - ', error.message, ' ejecutado el ', new Date().toJSON());
+             respuesta = error.message;
+         }
+
+        });
+        return respuesta;
      }
 
 }
