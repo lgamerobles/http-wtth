@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+    dev:
+        container_name: nestjs_api_dev
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+        command: npm run start:debug
+        ports:
+            - 8183:3000
+        networks:
+            - nesjs-network
+        restart: unless-stopped
+networks:
+    nesjs-network:
