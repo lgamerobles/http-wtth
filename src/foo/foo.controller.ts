@@ -28,6 +28,7 @@ import { Verify } from '../dto/verify.dto';
 import { ResetPassword } from '../dto/reset.dto';
 import { map, catchError } from 'rxjs/operators';
 import axios from 'axios'
+import https from 'https'
 import qs from 'qs'
 
 const SimpleNodeLogger = require('simple-node-logger'),
@@ -37,6 +38,10 @@ const SimpleNodeLogger = require('simple-node-logger'),
     },
 log = SimpleNodeLogger.createSimpleLogger( opts );
 
+
+axios.defaults.httpsAgent = new https.Agent({
+  rejectUnauthorized: false,
+});
 
 @Controller('/profile')
 export class FooController {
@@ -61,6 +66,7 @@ export class FooController {
           'companyId': 'AMCO',
           'Content-Type': 'application/json'
         },
+        rejectUnauthorized: false,
         data : recupera
       };
 
@@ -102,6 +108,7 @@ export class FooController {
         headers: {
           'Content-Type': 'application/json'
         },
+        rejectUnauthorized: false,
         data : verify
       };
 
@@ -143,6 +150,7 @@ export class FooController {
           'companyId': 'AMCO',
           'Content-Type': 'application/json'
         },
+        rejectUnauthorized: false,
         data : resetPassword
       };
 
@@ -181,6 +189,7 @@ export class FooController {
           headers: {
             'Content-Type': 'application/json'
           },
+          rejectUnauthorized: false,
           data : send
         };
         await axios(config)
@@ -220,6 +229,7 @@ export class FooController {
           'Content-Type': 'application/json',
           'idRequest': 'ResetPassClaroId',
         },
+        rejectUnauthorized: false,
       }).pipe(map((res) => {
          log.info('Método updatePass Salida - ', res.data, ' ejecutado el ', new Date().toJSON());
           return res.data;
@@ -238,6 +248,7 @@ export class FooController {
             headers: {
               'Content-Type': 'application/json'
             },
+            rejectUnauthorized: false,
             data : data
           };
         log.info('Método Activa Claro Id - ', data, ' ejecutado el ', new Date().toJSON());
@@ -279,6 +290,7 @@ export class FooController {
             'headers': {
               'Content-Type': 'application/json'
             },
+            rejectUnauthorized: false,
             body: JSON.stringify(jsonRequest)
           };
           request(options, function (error, response) {
@@ -307,6 +319,7 @@ export class FooController {
           'companyId': 'AMCO',
           'Content-Type': 'application/json'
         },
+        rejectUnauthorized: false,
         data : data
       };
       log.info('Método Create Claro Id Request - ', config, ' ejecutado el ', new Date().toJSON());
@@ -360,16 +373,17 @@ export class FooController {
        const params="grant_type="+login.grant_type+
                     "&username="+login.username+
                     "&password="+login.password+
-                    "&client_id="+login.client_id+
-                    "&client_secret="+login.client_secret;
+                    "&client_id=T0o2JIaTbqSjryaGlvRK_BbC6qga"+
+                    "&client_secret=E3BfzWqni0U1UyAg3tvQVW8ou3ca";
         log.info('Método loginId Entrada - ', params, ' ejecutado el ', new Date().toJSON());
 
-       return this.httpService.post("http://192.168.37.151:8181/auth/realms/ClaroID/protocol/openid-connect/token",
+       return this.httpService.post("https://192.168.37.151:9443/oauth2/token/",
        params,
        {
          headers: {
            'Content-type': 'application/x-www-form-urlencoded',
          },
+         rejectUnauthorized: false,
        }).pipe(map((res) => {
          //console.log(res.data);
          log.info('Método loginId Salida - ', res.data, ' ejecutado el ', new Date().toJSON());
@@ -387,6 +401,7 @@ export class FooController {
          headers: {
            'Content-type': 'application/json'
          },
+         rejectUnauthorized: false,
        }).pipe(map((res) => {
          //console.log(res.data);
          log.info('Método ValidateCedula Salida - ', res.data, ' ejecutado el ', new Date().toJSON());
@@ -421,6 +436,7 @@ export class FooController {
             'idRequest': 'Regularizacion_Chip_HW_Aut',
             'Content-Type': 'application/json'
           },
+          rejectUnauthorized: false,
           data : regulariza
         };
 
@@ -483,6 +499,7 @@ export class FooController {
             'IdRequest': 'WTTH:activacion',
             'Content-Type': 'application/json'
           },
+          rejectUnauthorized: false,
           data: aWth
         };
         log.info('Método ActivaWTTH Entrada - ', config, ' ejecutado el ', new Date().toJSON());
