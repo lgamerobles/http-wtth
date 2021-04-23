@@ -38,7 +38,7 @@ const SimpleNodeLogger = require('simple-node-logger'),
 log = SimpleNodeLogger.createSimpleLogger( opts );
 
 
-@Controller('/profile')
+@Controller('/api/profile')
 export class FooController {
   private readonly logger = new Logger();
     constructor(
