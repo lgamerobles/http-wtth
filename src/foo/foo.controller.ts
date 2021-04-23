@@ -28,7 +28,6 @@ import { Verify } from '../dto/verify.dto';
 import { ResetPassword } from '../dto/reset.dto';
 import { map, catchError } from 'rxjs/operators';
 import axios from 'axios'
-import https from 'https'
 import qs from 'qs'
 
 const SimpleNodeLogger = require('simple-node-logger'),
@@ -38,10 +37,6 @@ const SimpleNodeLogger = require('simple-node-logger'),
     },
 log = SimpleNodeLogger.createSimpleLogger( opts );
 
-
-axios.defaults.httpsAgent = new https.Agent({
-  rejectUnauthorized: false,
-});
 
 @Controller('/profile')
 export class FooController {
@@ -229,7 +224,6 @@ export class FooController {
           'Content-Type': 'application/json',
           'idRequest': 'ResetPassClaroId',
         },
-        rejectUnauthorized: false,
       }).pipe(map((res) => {
          log.info('Método updatePass Salida - ', res.data, ' ejecutado el ', new Date().toJSON());
           return res.data;
@@ -383,7 +377,6 @@ export class FooController {
          headers: {
            'Content-type': 'application/x-www-form-urlencoded',
          },
-         rejectUnauthorized: false,
        }).pipe(map((res) => {
          //console.log(res.data);
          log.info('Método loginId Salida - ', res.data, ' ejecutado el ', new Date().toJSON());
@@ -401,7 +394,6 @@ export class FooController {
          headers: {
            'Content-type': 'application/json'
          },
-         rejectUnauthorized: false,
        }).pipe(map((res) => {
          //console.log(res.data);
          log.info('Método ValidateCedula Salida - ', res.data, ' ejecutado el ', new Date().toJSON());
@@ -462,6 +454,7 @@ export class FooController {
         return respuesta;
      }
 
+     @Post('pin')
      async pin(pin, claroID)
      {
        let object: any="{ pin: "+pin+", claroID: "+claroID+" }";
