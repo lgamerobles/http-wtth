@@ -1,0 +1,22 @@
+version: '3'
+services:
+  claroid-portal:
+    image: claroid-web:1.0
+    ports:
+      - "8220:80"
+    networks:
+      - claroid-net
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 400M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+networks:
+  claroid-net:  
+    external: true
