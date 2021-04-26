@@ -280,7 +280,7 @@ export class FooController {
           var request = require('request');
           var options = {
             'method': 'PATCH',
-            'url': 'http://192.168.37.151:8282/claroId/v2/user/'+claroId,
+            'url': 'http://192.168.37.151:8282/claroId/v2/users/'+claroId,
             'headers': {
               'Content-Type': 'application/json'
             },
