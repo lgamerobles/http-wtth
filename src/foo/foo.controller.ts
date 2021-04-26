@@ -345,7 +345,7 @@ export class FooController {
     async buscarClaroId(@Param('claroId') claroId: string, @Query() params): Promise<any>
     {
       log.info('Método buscarId Entrada - ', claroId, ' ejecutado el ', new Date().toJSON());
-      const response = await this.httpService.get('http://192.168.37.151:8654/claroId/v1/profile/'+claroId).toPromise();
+      const response = await this.httpService.get('http://192.168.37.151:8282/claroId/v2/users/'+claroId).toPromise();
       log.info('Método buscarId Salida - ', response.data, ' ejecutado el ', new Date().toJSON());
       return response.data;
     }
