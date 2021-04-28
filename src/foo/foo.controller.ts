@@ -53,10 +53,11 @@ export class FooController {
 
       var axios = require('axios');
       /*var data = JSON.stringify({"claroID":"rsoledil@claro.com.ec"});*/
+      //http://192.168.37.151:8282/claroId/v2/passwords/recovery //desarrollo
       let respuesta=null;
       var config = {
         method: 'post',
-        url: 'http://192.168.37.151:8282/claroId/v2/passwords/recovery',
+        url: 'http://claroid-msa_claroid-ms:3000/claroId/v2/passwords/recovery',
         headers: {
           'companyId': 'AMCO',
           'Content-Type': 'application/json'
@@ -95,11 +96,13 @@ export class FooController {
     @Post('verify')
     async verify(@Body() verify: Verify)
     {
+      //http://claroid-msa_claroid-ms:3000
+      //http://192.168.37.151:8282/claroId/v2/tokens/verify
       var axios = require('axios');
       let respuesta=null;
       var config = {
         method: 'post',
-        url: 'http://192.168.37.151:8282/claroId/v2/tokens/verify',
+        url: 'http://claroid-msa_claroid-ms:3000/claroId/v2/tokens/verify',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -135,12 +138,14 @@ export class FooController {
     @Post('resetPassword')
     async resetPassword(@Body() resetPassword: ResetPassword)
     {
+      //http://claroid-msa_claroid-ms:3000
+      //http://192.168.37.151:8282/claroId/v2/passwords/reset   //desarrollo
       var axios = require('axios');
       //var data = JSON.stringify({"claroID":"lgame@grupo-link.com","resetToken":"3815","password":"789456","identificationCard":{"identify":"0941168569","expeditionDate":"10/01/1990"}});
       let respuesta = null;
       var config = {
         method: 'post',
-        url: 'http://192.168.37.151:8282/claroId/v2/passwords/reset',
+        url: 'http://claroid-msa_claroid-ms:3000/claroId/v2/passwords/reset',
         headers: {
           'companyId': 'AMCO',
           'Content-Type': 'application/json'
@@ -176,11 +181,13 @@ export class FooController {
     @Post('send')
     async send(@Body() send: Send)
     {
+      //http://claroid-msa_claroid-ms:3000
+      //http://192.168.37.151:8282/claroId/v2/tokens/send
         var axios = require('axios');
         let respuesta = null;
         var config = {
           method: 'post',
-          url: 'http://192.168.37.151:8282/claroId/v2/tokens/send',
+          url: 'http://claroid-msa_claroid-ms:3000/claroId/v2/tokens/send',
           headers: {
             'Content-Type': 'application/json'
           },
@@ -216,8 +223,10 @@ export class FooController {
     @Post('updatePass')
     olvidaPass(@Body() olvida: OlvidaPass)
     {
+      //claroid-msa_claroid-ms:3000
+      //http://192.168.37.146:8082/servlet/microGateway/invoke
       log.info('Método updatePass Entrada - ', olvida, ' ejecutado el ', new Date().toJSON());
-      return this.httpService.post("http://192.168.37.146:8082/servlet/microGateway/invoke",
+      return this.httpService.post("http://claroid-msa_claroid-ms:3000/claroId/v2/passwords/reset",
       olvida,
       {
         headers: {
@@ -233,12 +242,14 @@ export class FooController {
     @Post('activaUser')
     async activaUser(@Body() activaUser: ActivaUser)
     {
+      //http://claroid-msa_claroid-ms:3000
+      //http://192.168.37.151:8282/claroId/v2/users/activate
         var axios = require('axios');
         let respuesta = null;
         var data = activaUser;
         var config = {
             method: 'post',
-            url: 'http://192.168.37.151:8282/claroId/v2/users/activate',
+            url: 'http://claroid-msa_claroid-ms:3000/claroId/v2/users/activate',
             headers: {
               'Content-Type': 'application/json'
             },
@@ -274,13 +285,15 @@ export class FooController {
     @Patch('/:claroId')
     async updatePerfil(@Body() update: UpdatePerfil, @Param('claroId') claroId: string)
     {
+        //http://claroid-msa_claroid-ms:3000
+        //http://192.168.37.151:8282/claroId/v2/users/
           log.info('Método updatePerfil Entrada - ', update, ' ejecutado el ', new Date().toJSON());
           var jsonRequest = JSON.stringify(update);
           log.info('Método updatePerfil Correo - ', claroId, ' ejecutado el ', new Date().toJSON());
           var request = require('request');
           var options = {
             'method': 'PATCH',
-            'url': 'http://192.168.37.151:8282/claroId/v2/users/'+claroId,
+            'url': 'http://claroid-msa_claroid-ms:3000/claroId/v2/users/'+claroId,
             'headers': {
               'Content-Type': 'application/json'
             },
@@ -303,12 +316,14 @@ export class FooController {
     @Post('create')
     async createMessage(@Body() message: MessageDto)
     {
+      //http://claroid-msa_claroid-ms:3000
+      //http://192.168.37.151:8282/claroId/v2/users
       var axios = require('axios');
       let respuesta = null;
       var data = message;
       var config = {
         method: 'post',
-        url: 'http://192.168.37.151:8282/claroId/v2/users',
+        url: 'http://claroid-msa_claroid-ms:3000/claroId/v2/users',
         headers: {
           'companyId': 'AMCO',
           'Content-Type': 'application/json'
@@ -344,18 +359,21 @@ export class FooController {
    @Get('/buscarId/:claroId')
     async buscarClaroId(@Param('claroId') claroId: string, @Query() params): Promise<any>
     {
+      //http://claroid-msa_claroid-ms:3000
+      //http://192.168.37.151:8282/claroId/v2/users/
       log.info('Método buscarId Entrada - ', claroId, ' ejecutado el ', new Date().toJSON());
-      const response = await this.httpService.get('http://192.168.37.151:8282/claroId/v2/users/'+claroId).toPromise();
+      const response = await this.httpService.get('http://claroid-msa_claroid-ms:3000/claroId/v2/users/'+claroId).toPromise();
       log.info('Método buscarId Salida - ', response.data, ' ejecutado el ', new Date().toJSON());
       return response.data;
     }
 
     @Get('/obtenerProfile')
      async obtenerProfile(@Query() params): Promise<any>
-     {
+     {//http://claroid-msa_claroid-ms:3000
+       //http://192.168.37.151:8654/claroId/v1/profile?subscriberId='+params.subscriberId+'&profileId='+params.profileId).toPromise();
        console.log(params);
        log.info('Método obtenerProfile Entrada - ', params, ' ejecutado el ', new Date().toJSON());
-       const response = await this.httpService.get('http://192.168.37.151:8654/claroId/v1/profile?subscriberId='+params.subscriberId+'&profileId='+params.profileId).toPromise();
+       const response = await this.httpService.get('http://claroid-msa_claroid-ms:3000/claroId/v1/profile?subscriberId='+params.subscriberId+'&profileId='+params.profileId).toPromise();
        log.info('Método obtenerProfile Salida - ', response.data, ' ejecutado el ', new Date().toJSON());
        return response.data;
      }
@@ -367,11 +385,14 @@ export class FooController {
        const params="grant_type="+login.grant_type+
                     "&username="+login.username+
                     "&password="+login.password+
-                    "&client_id=T0o2JIaTbqSjryaGlvRK_BbC6qga"+
-                    "&client_secret=E3BfzWqni0U1UyAg3tvQVW8ou3ca";
+                    "&client_id=BXnru6IVISnr_1NZ5yNEZgPujiMa"+
+                    "&client_secret=FGhI1PyIXrSw4017QdoLZ9NAQt4a";
+                    /*"&client_id=T0o2JIaTbqSjryaGlvRK_BbC6qga"+
+                    "&client_secret=E3BfzWqni0U1UyAg3tvQVW8ou3ca";*/
         log.info('Método loginId Entrada - ', params, ' ejecutado el ', new Date().toJSON());
-
-       return this.httpService.post("https://192.168.37.151:9443/oauth2/token/",
+        //https://wso2is_identity-server:9443
+        //https://192.168.37.151:9443/oauth2/token/
+       return this.httpService.post("https://wso2is_identity-server:9443/oauth2/token/",
        params,
        {
          headers: {
@@ -386,9 +407,10 @@ export class FooController {
 
      @Post('ValidateCedula')
      validate(@Body() validate: ValidateCedulaDto)
-     {
+     { //http://claroid-msa_claroid-ms:3000
+       //http://192.168.37.151:8282/claroId/v2/user/identification
        log.info('Método ValidateCedula Entrada - ', validate, ' ejecutado el ', new Date().toJSON());
-       return this.httpService.post("http://192.168.37.151:8282/claroId/v2/user/identification",
+       return this.httpService.post("http://claroid-msa_claroid-ms:3000/claroId/v2/user/identification",
        validate,
        {
          headers: {
@@ -404,25 +426,13 @@ export class FooController {
      @Post('regularizacionChip')
      async regularizaChip(@Body() regulariza: RegularizaDto)
      {
-       /*console.log(regulariza);
-       log.info('Método regularizacionChip Entrada - ', regulariza, ' ejecutado el ', new Date().toJSON());
-       return this.httpService.post("http://192.168.37.146:8082/servlet/microGateway/invoke",
-       regulariza,
-       {
-         headers: {
-           'Content-type': 'application/json',
-           'idRequest':'Regularizacion_Chip_HW_Aut',
-         },
-       }).pipe(map((res) => {
-         log.info('Método regularizacionChip Salida - ', res.data, ' ejecutado el ', new Date().toJSON());
-         return res.data;
-       }));*/
+       //http://192.168.37.146:8082/servlet/microGateway/invoke
+       //http://10.31.32.13 8282
         var axios = require('axios');
-        //var data = JSON.stringify({"device":{"deviceID":"895930100086390309","serviceNumber":"0959730001"},"customer":{"identification":"1250021621","expeditionDate":"16/07/2020"}});
         let respuesta=null;
         var config = {
           method: 'post',
-          url: 'http://192.168.37.146:8082/servlet/microGateway/invoke',
+          url: 'http://10.31.32.13:8282/servlet/microGateway/invoke',
           headers: {
             'companyId': 'AMCO',
             'idRequest': 'Regularizacion_Chip_HW_Aut',
@@ -456,10 +466,11 @@ export class FooController {
 
      @Post('pin')
      async pin(pin, claroID)
-     {
+     {//http://claroid-msa_claroid-ms:3000
+       //http://192.168.37.151:8282/claroId/v2/user/pin
        let object: any="{ pin: "+pin+", claroID: "+claroID+" }";
        log.info('Método pin Entrada - ', object, ' ejecutado el ', new Date().toJSON());
-       return this.httpService.post("http://192.168.37.151:8282/claroId/v2/user/pin",
+       return this.httpService.post("http://claroid-msa_claroid-ms:3000/claroId/v2/user/pin",
        object,
        { headers: {'Content-type': 'application/json'},}).pipe(map((res) => {
          log.info('Método pin Salida - ', res.data, ' ejecutado el ', new Date().toJSON());
@@ -470,23 +481,13 @@ export class FooController {
      @Post('activaWtth')
      async activaWtth(@Body() aWth: ActivaWtth)
      {
-       /*log.info('Método ActivaWTTH Entrada - ', aWth, ' ejecutado el ', new Date().toJSON());
-       return this.httpService.post("http://192.168.37.146:8082/servlet/microGateway/invoke",
-       aWth,
-       {
-         headers: {
-           'Content-type': 'application/json',
-           'idRequest': 'ActivationWtth'
-         },
-       }).pipe(map((res) => {
-         log.info('Método ActivaWTTH Salida - ', res.data, ' ejecutado el ', new Date().toJSON());
-         return res.data;
-       }));*/
+       //http://192.168.37.146:8082/servlet/microGateway/invoke
+       //http://10.31.32.13 8282
        var axios = require('axios');
        let respuesta =null;
         var config = {
           method: 'post',
-          url: 'http://192.168.37.146:8082/servlet/microGateway/invoke',
+          url: 'http://10.31.32.13:8282/servlet/microGateway/invoke',
           headers: {
             'companyId': 'AMCO',
             'IdRequest': 'WTTH:activacion',
