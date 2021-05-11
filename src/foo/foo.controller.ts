@@ -40,7 +40,7 @@ log = SimpleNodeLogger.createSimpleLogger( opts );
 //let url_claroid ="http://192.168.37.151:8282/"; //desa
 let url_claroid ="http://claroid-msa_claroid-ms:3000/"; //prod
 //let url_login ="https://192.168.37.151:9443/";//desa
-let url_login ="https://wso2is_identity-server:9443/";//prod
+let url_login ="https://wso2is.edx.conecel.com/";//prod
 //let url_activa ="http://192.168.37.146:8082/";//desa
 let url_activa ="http://10.31.32.13:8282/";//prod
 
@@ -292,7 +292,7 @@ export class FooController {
     {
         //http://claroid-msa_claroid-ms:3000
         //http://192.168.37.151:8282/claroId/v2/users/
-          log.info('Método updatePerfil Entrada - ', update, ' ejecutado el ', new Date().toJSON());
+        /*  log.info('Método updatePerfil Entrada - ', update, ' ejecutado el ', new Date().toJSON());
           var jsonRequest = JSON.stringify(update);
           log.info('Método updatePerfil Correo - ', claroId, ' ejecutado el ', new Date().toJSON());
           var request = require('request');
@@ -315,7 +315,35 @@ export class FooController {
               log.info('Método updatePerfil Salida - ', response.body, ' ejecutado el ', new Date().toJSON());
               return response.body;
             }
+          });*/
+          var respuesta=null;
+          var axios = require('axios');
+          //var data = JSON.stringify({"contactMedium":[{"enable":true,"type":"cellphone","value":"0985214785"}]});
+          var data= update;
+          log.info('Método updatePerfil Entrada - ', data, ' ejecutado el ', new Date().toJSON());
+
+          var config = {
+            method: 'patch',
+            url: url_claroid+'claroId/v2/users/'+claroId,
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            rejectUnauthorized: false,
+            data : data
+          };
+
+          await axios(config)
+          .then(function (response) {
+            console.log(response.status);
+            respuesta = response.data;
+            //console.log(JSON.stringify(response.data));
+            log.info('Método updatePerfil Salida - ', response.data, ' ejecutado el ', new Date().toJSON());
+          })
+          .catch(function (error) {
+            respuesta=error;
+            log.info('Método updatePerfil Salida - ', error, ' ejecutado el ', new Date().toJSON());
           });
+          return respuesta;
     }
 
     @Post('create')
