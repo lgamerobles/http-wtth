@@ -145,8 +145,9 @@ export class FooController {
     {
       //http://claroid-msa_claroid-ms:3000
       //http://192.168.37.151:8282/claroId/v2/passwords/reset   //desarrollo
-      var axios = require('axios');
+      //var axios = require('axios');
       //var data = JSON.stringify({"claroID":"lgame@grupo-link.com","resetToken":"3815","password":"789456","identificationCard":{"identify":"0941168569","expeditionDate":"10/01/1990"}});
+      /*console.log(resetPassword);
       let respuesta = null;
       var config = {
         method: 'post',
@@ -161,6 +162,7 @@ export class FooController {
 
       axios(config)
       .then(function (response) {
+        console.log(response);
          respuesta=response.data;
          console.log(response.data);
       })
@@ -181,8 +183,43 @@ export class FooController {
         }
         log.info('Método resetPassword - ', error.config, ' ejecutado el ', new Date().toJSON());
       });
+      return respuesta;*/
+
+      var axios = require('axios');
+      var data = resetPassword;
+
+      var config = {
+        method: 'post',
+        url: url_claroid+'claroId/v2/passwords/reset',
+        headers: {
+          'companyId': 'AMCO',
+          'Content-Type': 'application/json'
+        },
+        data : data
+      };
+      var respuesta='';
+      await axios(config)
+      .then(function (response) {
+        console.log(response.data);
+        respuesta=response.data;
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        if (error.response) {
+         respuesta=error.response;
+         console.log(error.response.data);
+         respuesta = error.response.data;
+        } else if (error.request) {
+            console.log(error.request);
+            respuesta = error.request;
+        } else {
+            console.log('Error', error.message);
+            respuesta = error.message;
+        }
+      });
       return respuesta;
     }
+
     @Post('send')
     async send(@Body() send: Send)
     {
@@ -336,7 +373,6 @@ export class FooController {
           .then(function (response) {
             console.log(response.status);
             respuesta = response.data;
-            //console.log(JSON.stringify(response.data));
             log.info('Método updatePerfil Salida - ', response.data, ' ejecutado el ', new Date().toJSON());
           })
           .catch(function (error) {
