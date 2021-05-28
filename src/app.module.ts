@@ -6,7 +6,7 @@ import { FooModule } from './foo/foo.module';
 @Module({
     imports: [
         HttpModule,
-        FooModule, // <- we'll make use of the "augmented" HttpService in this module
+        FooModule,
     ],
 })
 export class AppModule {}

@@ -37,14 +37,28 @@ const log = require('simple-node-logger').createSimpleLogger();
     //let url_claroid ="http://claroid-msa_claroid-ms:3000/"; //prod Anterior
     let url_claroid ="http://claroid_msa:3000/"; //prod Actual
     //let url_login ="https://192.168.37.151:9443/";//desa
-    let url_login ="https://wso2is.edx.conecel.com/";//prod
+    let url_login ="https://wso2is.edx.conecel.com/";//prod 
     //let url_activa ="http://192.168.37.146:8082/";//desa
     let url_activa ="http://10.31.32.13:8282/";//prod
 /*FIN URL'S para métodos*/
 
 /*inicio prometheus*/
+const express = require('express');
+const promMid = require('express-prometheus-middleware');
+const app = express();
 
+const PORT = 9091;
 
+  app.use(promMid({
+  metricsPath: '/metrics',
+  collectDefaultMetrics: true,
+  requestDurationBuckets: [0.1, 0.5, 1, 1.5],
+  requestLengthBuckets: [512, 1024, 5120, 10240, 51200, 102400],
+  responseLengthBuckets: [512, 1024, 5120, 10240, 51200, 102400],
+  }));
+  app.listen(PORT, () => {
+  console.log(`Example api is listening on http://localhost:${PORT}`);
+  });
 /*fin prometheus*/
 
 @Controller('/api/profile')
@@ -593,5 +607,4 @@ export class FooController {
         });
         return respuesta;
      }
-
 }
