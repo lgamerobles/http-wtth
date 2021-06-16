@@ -26,6 +26,7 @@ import { ActivaWtth } from '../dto/activawtth-dto';
 import { Send } from '../dto/send.dto';
 import { Verify } from '../dto/verify.dto';
 import { ResetPassword } from '../dto/reset.dto';
+import { ResetPin } from '../dto/resetpin.dto';
 import { map, catchError } from 'rxjs/operators';
 import axios from 'axios';
 import qs from 'qs';
@@ -37,13 +38,13 @@ const log = require('simple-node-logger').createSimpleLogger();
     //let url_claroid ="http://claroid-msa_claroid-ms:3000/"; //prod Anterior
     let url_claroid ="http://claroid_msa:3000/"; //prod Actual
     //let url_login ="https://192.168.37.151:9443/";//desa
-    let url_login ="https://wso2is.edx.conecel.com/";//prod 
+    let url_login ="https://wso2is.edx.conecel.com/";//prod
     //let url_activa ="http://192.168.37.146:8082/";//desa
     let url_activa ="http://10.31.32.13:8282/";//prod
 /*FIN URL'S para métodos*/
 
 /*inicio prometheus*/
-const express = require('express');
+/*const express = require('express');
 const promMid = require('express-prometheus-middleware');
 const app = express();
 
@@ -58,7 +59,7 @@ const PORT = 9091;
   }));
   app.listen(PORT, () => {
   console.log(`Example api is listening on http://localhost:${PORT}`);
-  });
+});*/
 /*fin prometheus*/
 
 @Controller('/api/profile')
@@ -69,6 +70,41 @@ export class FooController {
     ) {}
 
     // create a custom timestamp format for log statements
+    @Post ('resetPin')
+    async resetPin(@Body() reset: ResetPin)
+    {
+      var axios = require('axios');
+      var respuesta = '';
+      //console.log(reset);
+      var config = {
+        method: 'post',
+        url: url_claroid+'claroId/v2/pin/reset',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data : reset
+      };
+      log.info('Método Actualiza pin Claro Id - IN', reset, ' ejecutado el ', new Date().toJSON());
+      await axios(config)
+      .then(function (response) {
+        respuesta = response.data;
+      })
+      .catch(function (error) {
+        if (error.response) {
+          //console.log(error.response);
+          respuesta='{"error": "'+error.response.status+'",'+' "descripcion": "'+error.response.statusText+'"}';
+          console.log(respuesta);
+        } else if (error.request) {
+            respuesta = error.request;
+        } else {
+           respuesta = error.message;
+        }
+      });
+      log.info('Método Actualiza pin Claro Id - OUT', respuesta, ' ejecutado el ', new Date().toJSON());
+
+      return respuesta;
+    }
+
     @Post('recuperaPass')
     async recuperaPass(@Body() recupera: Recupera)
     {
@@ -175,7 +211,6 @@ export class FooController {
         rejectUnauthorized: false,
         data : resetPassword
       };
-
       axios(config)
       .then(function (response) {
         console.log(response);
@@ -346,35 +381,8 @@ export class FooController {
     @Patch('/:claroId')
     async updatePerfil(@Body() update: UpdatePerfil, @Param('claroId') claroId: string)
     {
-        //http://claroid-msa_claroid-ms:3000
-        //http://192.168.37.151:8282/claroId/v2/users/
-        /*  log.info('Método updatePerfil Entrada - ', update, ' ejecutado el ', new Date().toJSON());
-          var jsonRequest = JSON.stringify(update);
-          log.info('Método updatePerfil Correo - ', claroId, ' ejecutado el ', new Date().toJSON());
-          var request = require('request');
-          var options = {
-            'method': 'PATCH',
-            'url': url_claroid+'claroId/v2/users/'+claroId,
-            'headers': {
-              'Content-Type': 'application/json'
-            },
-            rejectUnauthorized: false,
-            body: JSON.stringify(jsonRequest)
-          };
-          request(options, function (error, response) {
-            if (error) throw new Error(error);
-            console.log(response.statusCode);
-            if(response.statusCode == 204){
-              log.info('Método updatePerfil Salida - ', response.body, ' ejecutado el ', new Date().toJSON());
-              return response.statusCode;
-            } else{
-              log.info('Método updatePerfil Salida - ', response.body, ' ejecutado el ', new Date().toJSON());
-              return response.body;
-            }
-          });*/
           var respuesta=null;
           var axios = require('axios');
-          //var data = JSON.stringify({"contactMedium":[{"enable":true,"type":"cellphone","value":"0985214785"}]});
           var data= update;
           log.info('Método updatePerfil Entrada - ', data, ' ejecutado el ', new Date().toJSON());
 
