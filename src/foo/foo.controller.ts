@@ -34,9 +34,9 @@ import qs from 'qs';
 const log = require('simple-node-logger').createSimpleLogger();
 
 /*INICIO URL'S para métodos*/
-    //let url_claroid ="http://192.168.37.151:8282/"; //desa
+    let url_claroid ="http://192.168.37.151:8282/"; //desa
     //let url_claroid ="http://claroid-msa_claroid-ms:3000/"; //prod Anterior
-    let url_claroid ="http://claroid_msa:3000/"; //prod Actual
+    //let url_claroid ="http://claroid_msa:3000/"; //prod Actual
     //let url_login ="https://192.168.37.151:9443/";//desa
     let url_login ="https://wso2is.edx.conecel.com/";//prod
     //let url_activa ="http://192.168.37.146:8082/";//desa
@@ -91,8 +91,9 @@ export class FooController {
       })
       .catch(function (error) {
         if (error.response) {
-          //console.log(error.response);
-          respuesta='{"error": "'+error.response.status+'",'+' "descripcion": "'+error.response.statusText+'"}';
+          //console.log(error.response.data);
+          //respuesta='{"error": "'+error.response.status+'",'+' "descripcion": "'+error.response.statusText+'"}';
+          respuesta = error.response.data;
           console.log(respuesta);
         } else if (error.request) {
             respuesta = error.request;
