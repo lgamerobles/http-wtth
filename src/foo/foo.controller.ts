@@ -26,7 +26,9 @@ import { ActivaWtth } from '../dto/activawtth-dto';
 import { Send } from '../dto/send.dto';
 import { Verify } from '../dto/verify.dto';
 import { ResetPassword } from '../dto/reset.dto';
+import { Subscriber } from '../dto/subscriber.dto';
 import { ResetPin } from '../dto/resetpin.dto';
+import { quitarRedirect } from '../dto/quitarRedirect.dto';
 import { map, catchError } from 'rxjs/operators';
 import axios from 'axios';
 import qs from 'qs';
@@ -40,7 +42,12 @@ const log = require('simple-node-logger').createSimpleLogger();
     //let url_login ="https://192.168.37.151:9443/";//desa
     let url_login ="https://wso2is.edx.conecel.com/";//prod
     //let url_activa ="http://192.168.37.146:8082/";//desa
-    let url_activa ="http://10.31.32.13:8282/";//prod
+    //let url_activa ="http://10.31.32.13:8282/";//prod Anterior
+    let url_activa ="http://10.31.32.115:80/";//prod
+    //let url_querySubcriber = "http://192.168.37.205:8001/Rest/GrupoLink/V2.0/QuerySubscriber";//desa
+    let url_querySubcriber = "http://esbgold.integra.conecel.com/Rest/GrupoLink/V2.0/QuerySubscriber";//prod
+    //let url_redirect = "http://192.168.37.205:8001/Rest/Subscriber/V1.0/UpdateProperty";//desa
+    let url_redirect = "http://esbgold.integra.conecel.com/Rest/Subscriber/V1.0/UpdateProperty";//prod
 /*FIN URL'S para métodos*/
 
 /*inicio prometheus*/
@@ -69,7 +76,38 @@ export class FooController {
         private readonly httpService: HttpService,
     ) {}
 
-    // create a custom timestamp format for log statements
+    @Post('quitarRedirect')
+    async quitarRedirect(@Body() quitar: quitarRedirect){
+      var axios = require('axios');
+      var config = {
+        method: 'post',
+        url: url_redirect,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data : quitar
+      };
+      var respuesta='';
+      await axios(config)
+      .then(function (response) {
+        respuesta=response.data;
+        //console.log(JSON.stringify(response.data));
+        log.info('Método quitarRedirect - ', response.data, ' ejecutado el ', new Date().toJSON());
+      })
+      .catch(function (error) {
+        if (error.response) {
+          respuesta='{"error": "'+error.response.status+'",'+' "descripcion": "'+error.response.statusText+'"}';
+          log.info('Error Método quitarRedirect - ', respuesta, ' ejecutado el ', new Date().toJSON());
+        } else if (error.request) {
+            respuesta = error.request;
+            log.info('Error Método quitarRedirect - ', respuesta, ' ejecutado el ', new Date().toJSON());
+        } else {
+           respuesta = error.message;
+          log.info('Error Método quitarRedirect - ', respuesta, ' ejecutado el ', new Date().toJSON());
+        }
+      });
+      return respuesta;
+    }
     @Post ('resetPin')
     async resetPin(@Body() reset: ResetPin)
     {
@@ -91,10 +129,9 @@ export class FooController {
       })
       .catch(function (error) {
         if (error.response) {
-          //console.log(error.response.data);
-          //respuesta='{"error": "'+error.response.status+'",'+' "descripcion": "'+error.response.statusText+'"}';
-          respuesta = error.response.data;
-          console.log(respuesta);
+          //console.log(error.response);
+          respuesta='{"error": "'+error.response.status+'",'+' "descripcion": "'+error.response.statusText+'"}';
+          //console.log(respuesta);
         } else if (error.request) {
             respuesta = error.request;
         } else {
@@ -106,6 +143,45 @@ export class FooController {
       return respuesta;
     }
 
+    @Post('subscriberId')
+    async subscriberId(@Body() subscriber: Subscriber)
+    {
+      var axios = require('axios');
+      var config = {
+        method: 'post',
+        url: url_querySubcriber,
+        headers: {
+          'Content-Type': 'application/json'/*,
+          'Cookie': 'dtCookie=9DBA62B84B569257D95CAD6C023CB909|1|2||1'*/
+        },
+        data : subscriber
+      };
+      var respuesta = "";
+      await axios(config)
+      .then(function (response) {
+        //console.log(JSON.stringify(response.data));
+        log.info('Método subscriberId - ', response.data, ' ejecutado el ', new Date().toJSON());
+        respuesta = response.data;
+      })
+      .catch(function (error) {
+        if (error.response) {
+          respuesta=error.response;
+          log.info('Método Error subscriberId - ', error.response.data, ' ejecutado el ', new Date().toJSON());
+          //console.log(error.response.data);
+        } else if (error.request) {
+            //console.log(error.request);
+            respuesta = error.request;
+            log.info('Método Error subscriberId - ', error.response.data, ' ejecutado el ', new Date().toJSON());
+        } else {
+            //console.log('Error', error.message);
+            respuesta = error.message;
+            log.info('Método Error subscriberId - ', error.response.data, ' ejecutado el ', new Date().toJSON());
+        }
+      });
+      return respuesta;
+    }
+
+    // create a custom timestamp format for log statements
     @Post('recuperaPass')
     async recuperaPass(@Body() recupera: Recupera)
     {
@@ -212,6 +288,7 @@ export class FooController {
         rejectUnauthorized: false,
         data : resetPassword
       };
+
       axios(config)
       .then(function (response) {
         console.log(response);
@@ -259,7 +336,7 @@ export class FooController {
       })
       .catch(function (error) {
         if (error.response) {
-         respuesta=error.response;
+         respuesta = error.response;
          //console.log(error.response.data);
          log.info('Método resetPassword Claro Id - ', error.response, ' ejecutado el ', new Date().toJSON());
          respuesta = error.response.data;
@@ -382,8 +459,35 @@ export class FooController {
     @Patch('/:claroId')
     async updatePerfil(@Body() update: UpdatePerfil, @Param('claroId') claroId: string)
     {
+        //http://claroid-msa_claroid-ms:3000
+        //http://192.168.37.151:8282/claroId/v2/users/
+        /*  log.info('Método updatePerfil Entrada - ', update, ' ejecutado el ', new Date().toJSON());
+          var jsonRequest = JSON.stringify(update);
+          log.info('Método updatePerfil Correo - ', claroId, ' ejecutado el ', new Date().toJSON());
+          var request = require('request');
+          var options = {
+            'method': 'PATCH',
+            'url': url_claroid+'claroId/v2/users/'+claroId,
+            'headers': {
+              'Content-Type': 'application/json'
+            },
+            rejectUnauthorized: false,
+            body: JSON.stringify(jsonRequest)
+          };
+          request(options, function (error, response) {
+            if (error) throw new Error(error);
+            console.log(response.statusCode);
+            if(response.statusCode == 204){
+              log.info('Método updatePerfil Salida - ', response.body, ' ejecutado el ', new Date().toJSON());
+              return response.statusCode;
+            } else{
+              log.info('Método updatePerfil Salida - ', response.body, ' ejecutado el ', new Date().toJSON());
+              return response.body;
+            }
+          });*/
           var respuesta=null;
           var axios = require('axios');
+          //var data = JSON.stringify({"contactMedium":[{"enable":true,"type":"cellphone","value":"0985214785"}]});
           var data= update;
           log.info('Método updatePerfil Entrada - ', data, ' ejecutado el ', new Date().toJSON());
 
