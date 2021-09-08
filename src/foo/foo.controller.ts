@@ -47,7 +47,7 @@ const log = require('simple-node-logger').createSimpleLogger();
     //let url_querySubcriber = "http://192.168.37.205:8001/Rest/GrupoLink/V2.0/QuerySubscriber";//desa
     let url_querySubcriber = "http://esbgold.integra.conecel.com/Rest/GrupoLink/V2.0/QuerySubscriber";//prod
     //let url_redirect = "http://192.168.37.205:8001/Rest/Subscriber/V1.0/UpdateProperty";//desa
-    let url_redirect = "http://esbgold.integra.conecel.com/Rest/Subscriber/V1.0/UpdateProperty";//prod
+    let url_redirect = "http://esbgold.integra.conecel.com/Rest/Subscriber/V2.0/UpdateProperty";//prod
 /*FIN URL'S para métodos*/
 
 /*inicio prometheus*/
