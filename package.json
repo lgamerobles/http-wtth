@@ -18,7 +18,10 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "docker:build":"docker build -t claroid-web-bff:1.2.2 -f .\\deploy\\docker\\Dockerfile .",
+    "docker:tag":"docker tag claroid-web-bff:1.2.3 container-registry.conecel.com/claroid/claroid-web-bff:1.2.3",
+    "docker:push":"docker push container-registry.conecel.com/claroid/claroid-web-bff:1.2.3"
   },
   "dependencies": {
     "@nestjs/common": "^7.0.0",

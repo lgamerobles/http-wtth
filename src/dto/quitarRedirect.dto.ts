@@ -12,7 +12,7 @@ export class property{
 }
 
 export class header {
-  channelId: string;
+  channelId: number;
   companyId: string;
   consumerId: string;
   consumerProfileId: string;
@@ -21,7 +21,7 @@ export class header {
   externalTransactionId: string;
   internalTransactionId: string;
   mediaDetailId: string;
-  mediaId: string;
+  mediaId: number;
   password: string;
   terminal: string;
   token: string;
